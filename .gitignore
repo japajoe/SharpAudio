@@ -2,5 +2,6 @@
 /.clang
 /.codelite
 /.vscode
+/sharpaudio
 /SharpAudio.project
 /SharpAudio.workspace
