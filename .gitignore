@@ -1,0 +1,9 @@
+/build
+/.clang
+/.codelite
+/.vscode
+/LAudio.project
+/LAudio.workspace
+/postbuild.sh
+/Example/test
+/Example/test.wav
