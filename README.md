@@ -1,7 +1,7 @@
 # SharpAudio
 Realtime audio processing IDE using C# and the DotNetCore runtime.
 
-![](https://github.com/japajoe/LinuxForms/Example/SharpAudioPreview.png)
+![](SharpAudioPreview.png)
 
 # Dependencies
 - DotNetCore Runtime and SDK https://dotnet.microsoft.com/download/dotnet-core/3.1
