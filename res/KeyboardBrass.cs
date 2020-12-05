@@ -93,7 +93,7 @@ public class KeyboardBrass : AudioBaseType
 
     }
 
-    public override void OnAudioRead(float[] buffer, int channels, int bufferSize)
+    public override void OnAudioRead(float[] buffer, int channels)
     {
         keys = Midi.keys;
         x = 0;

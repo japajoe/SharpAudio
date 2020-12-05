@@ -1,6 +1,7 @@
 #include "Program.h"
 #include <iostream>
 #include "SharpAudioAPI.h"
+#include "ByteMe.h"
 
 std::vector<InspectorField> Program::inspectorFields;
 
@@ -51,6 +52,16 @@ void Program::Initialize()
     {
         std::string source = IO::ReadAllText("res/KeyboardWurley.cs");
         sourceview->item->SetText(source);
+    }
+
+    if(IO::FileExists("settings.bin"))
+    {
+        auto bytes = IO::ReadAllBytes("settings.bin");
+        ByteStream stream(&bytes[0], bytes.size());
+        foregroundColor.r = stream.Read<float>();
+        foregroundColor.g = stream.Read<float>();
+        foregroundColor.b = stream.Read<float>();
+        foregroundColor.a = stream.Read<float>();
     }
 
     CreateCallbacks();
@@ -351,7 +362,16 @@ void Program::OnMenuItemMidiInitialize()
 
 void Program::OnApplicationQuit()
 {
-    
+    byte buffer[128];
+    memset(buffer, 0, 128);
+    ByteStream stream(buffer, 128);
+    stream.Write(foregroundColor.r);
+    stream.Write(foregroundColor.g);
+    stream.Write(foregroundColor.b);
+    stream.Write(foregroundColor.a);
+    int length = stream.GetLength();
+
+    IO::WriteAllBytes(buffer, length, "settings.bin");
 }
 
 void Program::SetInspectorFields()

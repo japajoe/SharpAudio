@@ -9,6 +9,7 @@ Realtime audio processing IDE using C# and the DotNetCore runtime.
 - glib 2.0
 - libgtksourceview-3.0-dev
 - libLinuxForms https://github.com/japajoe/LinuxForms
+- libByteMe https://github.com/japajoe/ByteMe
 - libasound
 - libsdl2-dev
 

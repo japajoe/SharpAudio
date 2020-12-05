@@ -81,7 +81,7 @@ public class KeyboardBell2 : AudioBaseType
 
 
 
-    public override void OnAudioRead(float[] buffer, int channels, int bufferSize)
+    public override void OnAudioRead(float[] buffer, int channels)
     {
 
         x = 0;

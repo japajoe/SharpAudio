@@ -42,7 +42,7 @@ public class ProtoType : AudioBaseType
 
 
 
-    public override void OnAudioRead(float[] buffer, int channels, int bufferSize)
+    public override void OnAudioRead(float[] buffer, int channels)
     {
 		keys = MidiInput.keys;
 		x = 0;

@@ -9,12 +9,13 @@ SRC_EXT = cpp
 INC_PATH = include
 
 INC_PATH_UI = /usr/local/include/LinuxForms
+INC_PATH_BYTEME = /usr/local/include/ByteMe
 INC_PATH_RUNTIME = include/Runtime
 
 SRC_PATH = src
 SRC_PATH_RUNTIME = src/Runtime
 
-LIBRARIES = -lpthread -ldl -lstdc++fs -lLinuxForms -lasound
+LIBRARIES = -lpthread -ldl -lstdc++fs -lLinuxForms -lByteMe -lasound
 
 # Space-separated pkg-config libraries used by this project
 LIBS = gtk+-3.0 gtksourceview-3.0
@@ -26,7 +27,7 @@ RCOMPILE_FLAGS = -D NDEBUG -D__LINUX_ALSA__
 # Additional debug-specific flags
 DCOMPILE_FLAGS = -D DEBUG -D__LINUX_ALSA__
 # Add additional include paths
-INCLUDES = -I $(SRC_PATH) -I $(INC_PATH) -I $(INC_PATH_UI) -I $(SRC_PATH_RUNTIME) -I $(INC_PATH_RUNTIME)
+INCLUDES = -I $(SRC_PATH) -I $(INC_PATH) -I $(INC_PATH_UI) -I $(SRC_PATH_RUNTIME) -I $(INC_PATH_RUNTIME) -I $(INC_PATH_BYTEME)
 # General linker settings
 LINK_FLAGS = $(LIBRARIES)
 # Additional release-specific linker settings

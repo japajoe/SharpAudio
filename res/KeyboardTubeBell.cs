@@ -127,7 +127,7 @@ public class KeyboardTubeBell : AudioBaseType
 
     }
 
-    public override void OnAudioRead(float[] buffer, int channels, int bufferSize)
+    public override void OnAudioRead(float[] buffer, int channels)
     {
 		float x = 0;
         float t  = 1.0f / 128;
