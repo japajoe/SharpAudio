@@ -284,12 +284,28 @@ void Program::OnMenuItemExitClicked()
 
 void Program::OnMenuItemUndoClicked()
 {
+    auto sourceview = tabcontrol->GetSelectedItem();
 
+    if(sourceview != nullptr)
+    {    
+        GtkSourceBuffer* buffer = sourceview->GetBuffer();
+        
+        if(gtk_source_buffer_can_undo(buffer))
+            gtk_source_buffer_undo(buffer);
+    }
 }
 
 void Program::OnMenuItemRedoClicked()
 {
+    auto sourceview = tabcontrol->GetSelectedItem();
 
+    if(sourceview != nullptr)
+    {    
+        GtkSourceBuffer* buffer = sourceview->GetBuffer();
+        
+        if(gtk_source_buffer_can_redo(buffer))
+            gtk_source_buffer_redo(buffer);
+    }
 }
 
 void Program::OnMenuItemCutClicked()
@@ -309,7 +325,18 @@ void Program::OnMenuItemPasteClicked()
 
 void Program::OnMenuItemSelectAllClicked()
 {
+    auto sourceview = tabcontrol->GetSelectedItem();
 
+    if(sourceview != nullptr)
+    {
+        GtkSourceBuffer* buffer = sourceview->GetBuffer();        
+        GtkTextIter start, end;
+	    gtk_text_buffer_get_bounds(GTK_TEXT_BUFFER(buffer), &start, &end);        
+        gtk_text_buffer_get_iter_at_offset(GTK_TEXT_BUFFER(buffer), &start, 0);
+        gtk_text_buffer_get_iter_at_offset(GTK_TEXT_BUFFER(buffer), &end, 0);
+        gtk_text_iter_forward_to_end(&end);
+        gtk_text_buffer_select_range(GTK_TEXT_BUFFER(buffer), &start, &end);
+    }
 }
 
 void Program::OnMenuItemClearLogClicked()
