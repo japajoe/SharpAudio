@@ -29,16 +29,16 @@ set_midi_pitchbend_state SharpAudioAPI::setMidiPitchBendState = nullptr;
 set_midi_modwheel_state SharpAudioAPI::setMidiModWheelState = nullptr;
 set_midi_volumeslider_state SharpAudioAPI::setMidiVolumeSliderState = nullptr;
 
-bool SharpAudioAPI::Initialize(char* argv)
+bool SharpAudioAPI::Initialize(char *argv)
 {
-    SimpleCoreCLRHost* host = SharpAudioAPI::dotnet.GetHost();
+    SimpleCoreCLRHost *host = SharpAudioAPI::dotnet.GetHost();
 
-    if(!dotnet.InitializeDotNetRuntime(argv))
+    if (!dotnet.InitializeDotNetRuntime(argv))
         return false;
 
     initialize = reinterpret_cast<initialize_ptr>(host->clr->getCSharpFunctionPtr("SharpAudio", "SharpAudio.Program", "Initialize"));
 
-    if(!initialize)
+    if (!initialize)
         return false;
 
     initialize(LogMessage);
@@ -66,7 +66,7 @@ bool SharpAudioAPI::Initialize(char* argv)
     setMidiModWheelState = reinterpret_cast<set_midi_modwheel_state>(host->clr->getCSharpFunctionPtr("SharpAudio", "SharpAudio.Midi", "SetMidiModWheelState"));
     setMidiVolumeSliderState = reinterpret_cast<set_midi_volumeslider_state>(host->clr->getCSharpFunctionPtr("SharpAudio", "SharpAudio.Midi", "SetMidiVolumeSliderState"));
 
-    if(!InitializeMidi())
+    if (!InitializeMidi())
         std::cout << "Midi could not be initialized\n";
 
     return true;
@@ -75,33 +75,33 @@ bool SharpAudioAPI::Initialize(char* argv)
 bool SharpAudioAPI::InitializeMidi()
 {
     midiIn = std::make_unique<RtMidiIn>();
-	
-	midiKeyInfo.resize(128);
-	
-	for(size_t i = 0; i < midiKeyInfo.size(); i++)
-		midiKeyInfo[i] = 0;
-    
+
+    midiKeyInfo.resize(128);
+
+    for (size_t i = 0; i < midiKeyInfo.size(); i++)
+        midiKeyInfo[i] = 0;
+
     // Check available ports.
     unsigned int nPorts = midiIn->getPortCount();
-    if (nPorts == 0 ) 
+    if (nPorts == 0)
     {
         std::cout << "No ports available!\n";
         return false;
     }
     else
-	{
+    {
         std::cout << "Number of ports: " << nPorts << '\n';
-	}
+    }
 
-    if(nPorts > 1)
-	{
+    if (nPorts > 1)
+    {
         midiIn->openPort(1);
-	}
+    }
     else
     {
         return false;
     }
-    
+
     // Set our callback function.  This should be done immediately after
     // opening the port to avoid having incoming messages written to the
     // queue.
@@ -113,7 +113,7 @@ bool SharpAudioAPI::InitializeMidi()
     return true;
 }
 
-void SharpAudioAPI::OnMidiRead(double deltatime, std::vector< unsigned char > *message, void *userData)
+void SharpAudioAPI::OnMidiRead(double deltatime, std::vector<unsigned char> *message, void *userData)
 {
     //byte 1 = keyIndex
     //byte2 = velocity: if(velocity > 0) = on
@@ -122,124 +122,120 @@ void SharpAudioAPI::OnMidiRead(double deltatime, std::vector< unsigned char > *m
     unsigned int keyIndex = 0;
     unsigned int velocity = 0;
 
-	
-	unsigned int byte1 = 0;
+    unsigned int byte1 = 0;
 
-
-    for (unsigned int i=0; i<nBytes; i++)
+    for (unsigned int i = 0; i < nBytes; i++)
     {
-		if(i == 0)
-		{
-			byte1 = (unsigned int)message->at(i);
-		}
-        if(i == 1)
+        if (i == 0)
+        {
+            byte1 = (unsigned int)message->at(i);
+        }
+        if (i == 1)
         {
             keyIndex = (int)message->at(i);
         }
-        else if(i == 2)
+        else if (i == 2)
         {
             velocity = (int)message->at(i);
-        }		
-		
+        }
+
         //std::cout << "Byte " << i << " = " << (int)message->at(i) << ", \n";
     }
-    if ( nBytes > 0 )
+    if (nBytes > 0)
     {
         //std::cout << "stamp = " << deltatime << std::endl;
-		//std::cout << nBytes << "\n";
+        //std::cout << nBytes << "\n";
     }
 
-	
+    if (byte1 != 224 && byte1 != 176)
+    {
+        midiKeyInfo[keyIndex] = velocity;
 
-	if(byte1 != 224 && byte1 != 176)
-	{
-		midiKeyInfo[keyIndex] = velocity;
-		
-		if(velocity > 0)
-			setMidiKeyStateDown(keyIndex, velocity);
-		else
-			setMidiKeyStateUp(keyIndex, velocity);
-		
-		//std::cout << "Key index: " << keyIndex << " state: " << velocity << "\n";
-	}
-	else
-	{
-		switch(byte1)
-		{
-			case 224:
-			{
-				setMidiPitchBendState(velocity);
-				break;
-			}
-			case 176:
-			{
-				if(keyIndex == 1)
-				{
-					setMidiModWheelState(velocity);
-				}
-				else if(keyIndex == 7)
-				{
-					setMidiVolumeSliderState(velocity);
-				}
-				break;
-			}
-			default:
-				break;
-		}
+        if (velocity > 0)
+            setMidiKeyStateDown(keyIndex, velocity);
+        else
+            setMidiKeyStateUp(keyIndex, velocity);
 
-		//Byte 224 : Pitchbend
-		//Byte 176 + Key index 1: Modwheel
-		//Byte 176 + Key index 7: Volumeslider
-		//std::cout << "Byte: " << byte1 << " Key index: " << keyIndex << " state: " << velocity << "\n";
-	}
+        //std::cout << "Key index: " << keyIndex << " state: " << velocity << "\n";
+    }
+    else
+    {
+        switch (byte1)
+        {
+        case 224:
+        {
+            setMidiPitchBendState(velocity);
+            break;
+        }
+        case 176:
+        {
+            if (keyIndex == 1)
+            {
+                setMidiModWheelState(velocity);
+            }
+            else if (keyIndex == 7)
+            {
+                setMidiVolumeSliderState(velocity);
+            }
+            break;
+        }
+        default:
+            break;
+        }
+
+        //Byte 224 : Pitchbend
+        //Byte 176 + Key index 1: Modwheel
+        //Byte 176 + Key index 7: Volumeslider
+        //std::cout << "Byte: " << byte1 << " Key index: " << keyIndex << " state: " << velocity << "\n";
+    }
 }
 
-void SharpAudioAPI::LogMessage(char* message)
+void SharpAudioAPI::LogMessage(char *message)
 {
     std::string msg(message);
-    if(onDebug != nullptr)
+    if (onDebug != nullptr)
         onDebug(msg);
     delete message;
 }
 
 void SharpAudioAPI::StopApplication()
 {
-    if(stopApplication != nullptr)
+    if (stopApplication != nullptr)
         stopApplication();
 }
 
-bool SharpAudioAPI::Compile(const std::string& source)
+bool SharpAudioAPI::Compile(const std::string &source)
 {
-    if(compile != nullptr)
+    if (compile != nullptr)
         return compile(source.c_str());
     return false;
 }
 
 void SharpAudioAPI::StopScript()
 {
-    if(stopScript != nullptr)
+    if (stopScript != nullptr)
         stopScript();
 }
 
 int SharpAudioAPI::GetFieldCount()
 {
-    if(getFieldCount != nullptr)
+    if (getFieldCount != nullptr)
         return getFieldCount();
     return 0;
 }
 
 int SharpAudioAPI::GetFieldType(int fieldIndex)
 {
-    if(getFieldType != nullptr)
+    if (getFieldType != nullptr)
         return getFieldType(fieldIndex);
     return -1;
 }
 
-bool SharpAudioAPI::GetFieldName(int fieldIndex, std::string& name)
+bool SharpAudioAPI::GetFieldName(int fieldIndex, std::string &name)
 {
-    if(getFieldName != nullptr)
+    if (getFieldName != nullptr)
     {
-        char* fieldName = getFieldName(fieldIndex);
+        char *fieldName = getFieldName(fieldIndex);
         name = std::string(fieldName);
         delete fieldName;
         return true;
@@ -247,11 +243,11 @@ bool SharpAudioAPI::GetFieldName(int fieldIndex, std::string& name)
     return false;
 }
 
-bool SharpAudioAPI::GetFieldValue(int fieldIndex, std::string& value)
+bool SharpAudioAPI::GetFieldValue(int fieldIndex, std::string &value)
 {
-    if(getFieldValue != nullptr)
+    if (getFieldValue != nullptr)
     {
-        char* fieldValue = getFieldValue(fieldIndex);
+        char *fieldValue = getFieldValue(fieldIndex);
         value = std::string(fieldValue);
         delete fieldValue;
         return true;
@@ -259,101 +255,101 @@ bool SharpAudioAPI::GetFieldValue(int fieldIndex, std::string& value)
     return false;
 }
 
-void SharpAudioAPI::SetFieldValue(int fieldIndex, const std::string& value)
+void SharpAudioAPI::SetFieldValue(int fieldIndex, const std::string &value)
 {
-    if(setFieldValue != nullptr)
+    if (setFieldValue != nullptr)
         setFieldValue(fieldIndex, value.c_str());
 }
 
 double SharpAudioAPI::GetFieldMinValue(int fieldIndex)
 {
-    if(getFieldMinValue != nullptr)
+    if (getFieldMinValue != nullptr)
         return getFieldMinValue(fieldIndex);
     return 0;
 }
 
 double SharpAudioAPI::GetFieldMaxValue(int fieldIndex)
 {
-    if(getFieldMaxValue != nullptr)
+    if (getFieldMaxValue != nullptr)
         return getFieldMaxValue(fieldIndex);
     return 0;
 }
 
 float SharpAudioAPI::GetSampleAtOffset(int audiosourceIndex, int sampleIndex)
 {
-    if(getSampleAtOffset != nullptr)
+    if (getSampleAtOffset != nullptr)
         return getSampleAtOffset(audiosourceIndex, sampleIndex);
     return 0;
 }
 
 float SharpAudioAPI::GetSampleLeft(int audiosourceIndex)
 {
-    if(getSampleLeft != nullptr)
+    if (getSampleLeft != nullptr)
         return getSampleLeft(audiosourceIndex);
     return 0;
 }
 
 float SharpAudioAPI::GetSampleRight(int audiosourceIndex)
 {
-    if(getSampleRight != nullptr)
+    if (getSampleRight != nullptr)
         return getSampleRight(audiosourceIndex);
     return 0;
 }
 
 int SharpAudioAPI::GetAudioSourceCount()
 {
-    if(getAudioSourceCount != nullptr)
+    if (getAudioSourceCount != nullptr)
         return getAudioSourceCount();
     return 0;
 }
 
 long SharpAudioAPI::GetPlaybackPosition(int audiosourceIndex)
 {
-    if(getPlaybackPosition != nullptr)
+    if (getPlaybackPosition != nullptr)
         return getPlaybackPosition(audiosourceIndex);
     return 0;
 }
 
 int SharpAudioAPI::GetDataLength(int audiosourceIndex)
 {
-    if(getDataLength != nullptr)
+    if (getDataLength != nullptr)
         return getDataLength(audiosourceIndex);
     return 0;
 }
 
 bool SharpAudioAPI::IsAudioSourcePlaying(int audiosourceIndex)
 {
-    if(isAudioSourcePlaying != nullptr)
+    if (isAudioSourcePlaying != nullptr)
         return isAudioSourcePlaying(audiosourceIndex);
     return false;
 }
 
 void SharpAudioAPI::SetMidiKeyStateDown(int keyIndex, int velocity)
 {
-    if(setMidiKeyStateDown != nullptr)
+    if (setMidiKeyStateDown != nullptr)
         setMidiKeyStateDown(keyIndex, velocity);
 }
 
 void SharpAudioAPI::SetMidiKeyStateUp(int keyIndex, int velocity)
 {
-    if(setMidiKeyStateUp != nullptr)
+    if (setMidiKeyStateUp != nullptr)
         setMidiKeyStateUp(keyIndex, velocity);
 }
 
 void SharpAudioAPI::SetMidiPitchBendState(int velocity)
 {
-    if(setMidiPitchBendState != nullptr)
+    if (setMidiPitchBendState != nullptr)
         setMidiPitchBendState(velocity);
 }
 
 void SharpAudioAPI::SetMidiModWheelState(int velocity)
 {
-    if(setMidiModWheelState != nullptr)
+    if (setMidiModWheelState != nullptr)
         setMidiModWheelState(velocity);
 }
 
 void SharpAudioAPI::SetMidiVolumeSliderState(int velocity)
 {
-    if(setMidiVolumeSliderState != nullptr)
+    if (setMidiVolumeSliderState != nullptr)
         setMidiVolumeSliderState(velocity);
 }
