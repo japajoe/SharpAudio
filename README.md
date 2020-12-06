@@ -28,7 +28,7 @@ Install all dependencies and run make. Be sure to place all DLL files and style.
 ```csharp
 using SharpAudio;
 
-public class ProtoType : AudioBaseType
+public class Example : AudioBaseType
 {	
 	[Inspectable] public float gain = 0.5;
 	[Inspectable] public float frequency = 440.0f;
