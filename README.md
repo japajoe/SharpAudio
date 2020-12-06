@@ -3,6 +3,14 @@ Realtime audio processing IDE using C# and the DotNetCore runtime.
 
 ![](SharpAudioPreview.png)
 
+# Features
+- Wavetable generators
+- Several filters like lowpass/highpass/bandpass/shelf/notch
+- ADSR envelope controller
+- Load wavefile into AudioClip from file or from a buffer
+- Midi keyboard support
+- Compile code once and change values through inspector for realtime feedback
+
 # Dependencies
 - DotNetCore Runtime and SDK https://dotnet.microsoft.com/download/dotnet-core/3.1
 - libgtk-3-dev
@@ -13,13 +21,8 @@ Realtime audio processing IDE using C# and the DotNetCore runtime.
 - libasound
 - libsdl2-dev
 
-# Features
-- Wavetable generators
-- Several filters like lowpass/highpass/bandpass/shelf/notch
-- ADSR envelope controller
-- Load wavefile into AudioClip from file or from a buffer
-- Midi keyboard support
-- Compile code once and change values through inspector for realtime feedback
+# Building
+Install all dependencies and run make. Be sure to place all DLL files and style.css plus the 'res' folder in same directory as the executable.
 
 # Disclaimer
 All the information provided on this repository is provided on an “as is” and “as available” basis and you agree that you use such information entirely at your own risk.
