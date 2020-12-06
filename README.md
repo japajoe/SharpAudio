@@ -13,6 +13,14 @@ Realtime audio processing IDE using C# and the DotNetCore runtime.
 - libasound
 - libsdl2-dev
 
+# Features
+- Wavetable generators
+- Several filters like lowpass/highpass/bandpass/shelf/notch
+- ADSR envelope controller
+- Load wavefile into AudioClip from file or from a buffer
+- Midi keyboard support
+- Compile code once and change values through inspector for realtime feedback
+
 # Disclaimer
 All the information provided on this repository is provided on an “as is” and “as available” basis and you agree that you use such information entirely at your own risk.
 
