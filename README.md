@@ -33,29 +33,29 @@ public class ProtoType : AudioBaseType
 	[Inspectable] public float gain = 0.5;
 	[Inspectable] public float frequency = 440.0f;
 
-    private long timer = 0;
+	private long timer = 0;
 
 	public override void Start()
 	{
-        audioSource.Play();
+		audioSource.Play();
 	}
 
-    public override void OnAudioRead(float[] buffer, int channels)
-    {
-        float sample = 0.0f;
+	public override void OnAudioRead(float[] buffer, int channels)
+	{
+		float sample = 0.0f;
 
 		for(int i = 0; i < buffer.Length; i+=channels)
 		{
 			sample = (float)Math.Sin(2 * Math.PI * timer * frequency / 44100) * gain;
 
 			buffer[i] = sample;
-		
-        	if(channels == 2)
+
+			if(channels == 2)
 				buffer[i+1] = sample;
 
 			timer++;
 		}
-    }
+	}
 }
 ```
 
