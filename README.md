@@ -24,6 +24,41 @@ Realtime audio processing IDE using C# and the DotNetCore runtime.
 # Building
 Install all dependencies and run make. Be sure to place all DLL files and style.css plus the 'res' folder in same directory as the executable.
 
+# Generating a basic sound
+```csharp
+using SharpAudio;
+
+public class ProtoType : AudioBaseType
+{	
+	[Inspectable] public float gain = 0.5;
+	[Inspectable] public float frequency = 440.0f;
+
+    private long timer = 0;
+
+	public override void Start()
+	{
+        audioSource.Play();
+	}
+
+    public override void OnAudioRead(float[] buffer, int channels)
+    {
+        float sample = 0.0f;
+
+		for(int i = 0; i < buffer.Length; i+=channels)
+		{
+			sample = (float)Math.Sin(2 * Math.PI * timer * frequency / 44100) * gain;
+
+			buffer[i] = sample;
+		
+        	if(channels == 2)
+				buffer[i+1] = sample;
+
+			timer++;
+		}
+    }
+}
+```
+
 # Disclaimer
 All the information provided on this repository is provided on an “as is” and “as available” basis and you agree that you use such information entirely at your own risk.
 
