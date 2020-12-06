@@ -26,6 +26,7 @@ Install all dependencies and run make. Be sure to place all DLL files and style.
 
 # Generating a basic sound
 ```csharp
+using System;
 using SharpAudio;
 
 public class Example : AudioBaseType
