@@ -28,6 +28,8 @@ set_midi_key_state_up_ptr SharpAudioAPI::setMidiKeyStateUp = nullptr;
 set_midi_pitchbend_state SharpAudioAPI::setMidiPitchBendState = nullptr;
 set_midi_modwheel_state SharpAudioAPI::setMidiModWheelState = nullptr;
 set_midi_volumeslider_state SharpAudioAPI::setMidiVolumeSliderState = nullptr;
+set_key_down_ptr SharpAudioAPI::setKeyDown = nullptr;
+set_key_up_ptr SharpAudioAPI::setKeyUp = nullptr;
 
 bool SharpAudioAPI::Initialize(char *argv)
 {
@@ -65,6 +67,8 @@ bool SharpAudioAPI::Initialize(char *argv)
     setMidiPitchBendState = reinterpret_cast<set_midi_pitchbend_state>(host->clr->getCSharpFunctionPtr("SharpAudio", "SharpAudio.Midi", "SetMidiPitchBendState"));
     setMidiModWheelState = reinterpret_cast<set_midi_modwheel_state>(host->clr->getCSharpFunctionPtr("SharpAudio", "SharpAudio.Midi", "SetMidiModWheelState"));
     setMidiVolumeSliderState = reinterpret_cast<set_midi_volumeslider_state>(host->clr->getCSharpFunctionPtr("SharpAudio", "SharpAudio.Midi", "SetMidiVolumeSliderState"));
+    setKeyDown = reinterpret_cast<set_key_down_ptr>(host->clr->getCSharpFunctionPtr("SharpAudio", "SharpAudio.Input", "SetKeyDown"));
+    setKeyUp = reinterpret_cast<set_key_up_ptr>(host->clr->getCSharpFunctionPtr("SharpAudio", "SharpAudio.Input", "SetKeyUp"));
 
     if (!InitializeMidi())
         std::cout << "Midi could not be initialized\n";
@@ -352,4 +356,16 @@ void SharpAudioAPI::SetMidiVolumeSliderState(int velocity)
 {
     if (setMidiVolumeSliderState != nullptr)
         setMidiVolumeSliderState(velocity);
+}
+
+void SharpAudioAPI::SetKeyDown(unsigned char keycode)
+{
+    if(setKeyDown != nullptr)
+        setKeyDown(keycode);
+}
+
+void SharpAudioAPI::SetKeyUp(unsigned char keycode)
+{
+    if(setKeyUp != nullptr)
+        setKeyUp(keycode);
 }

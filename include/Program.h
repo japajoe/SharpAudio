@@ -50,6 +50,8 @@ private:
     void OnDrawWave(GtkWidget* widget, cairo_t* cr, gpointer data);
     void OnDrawLevels(GtkWidget* widget, cairo_t* cr, gpointer data);
     void OnDrawingAreaClicked(guint button, double x, double y);
+    void OnKeyDown(const KeyCode& keycode);
+    void OnKeyUp(const KeyCode& keycode);
 
     static void OnCheckButtonToggled(GtkToggleButton *widget, gpointer user_data);
     static void OnEntryTextChanged(GtkEditable *editable, gpointer user_data);

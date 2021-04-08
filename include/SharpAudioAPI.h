@@ -34,6 +34,8 @@ typedef void (*set_midi_key_state_up_ptr)(int keyIndex, int velocity);
 typedef void (*set_midi_pitchbend_state)(int velocity);
 typedef void (*set_midi_modwheel_state)(int velocity);
 typedef void (*set_midi_volumeslider_state)(int velocity);
+typedef void (*set_key_down_ptr)(unsigned char keycode);
+typedef void (*set_key_up_ptr)(unsigned char keycode);
 
 class SharpAudioAPI
 {
@@ -63,6 +65,8 @@ public:
     static void SetMidiPitchBendState(int velocity);
     static void SetMidiModWheelState(int velocity);
     static void SetMidiVolumeSliderState(int velocity);
+    static void SetKeyDown(unsigned char keycode);
+    static void SetKeyUp(unsigned char keycode);
 private:
     static DotNet dotnet;
     static std::unique_ptr<RtMidiIn> midiIn;
@@ -92,5 +96,7 @@ private:
     static set_midi_pitchbend_state setMidiPitchBendState;
     static set_midi_modwheel_state setMidiModWheelState;
     static set_midi_volumeslider_state setMidiVolumeSliderState;
+    static set_key_down_ptr setKeyDown;
+    static set_key_up_ptr setKeyUp;
 };
 #endif

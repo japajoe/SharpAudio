@@ -125,6 +125,8 @@ void Program::CreateCallbacks()
     drawingarea2->onDraw += [this](GtkWidget *widget, cairo_t *cr, gpointer data) { this->OnDrawLevels(widget, cr, data); };
     drawingarea1->onButtonPressed += [this](guint button, double x, double y) { this->OnDrawingAreaClicked(button, x, y); };
     window->onClosing += [this]() { this->OnApplicationQuit(); };
+    window->onKeyDown += [this](const KeyCode& keycode) { this->OnKeyDown(keycode); };
+    window->onKeyUp += [this](const KeyCode& keycode) { this->OnKeyUp(keycode); };
 }
 
 void Program::LogMessage(const std::string &message)
@@ -238,6 +240,18 @@ void Program::OnDrawingAreaClicked(guint button, double x, double y)
     {
         foregroundColor = dialog.GetColor();
     }
+}
+
+void Program::OnKeyDown(const KeyCode& keycode)
+{
+    unsigned char key = static_cast<unsigned char>(keycode);
+    SharpAudioAPI::SetKeyDown(key);
+}
+
+void Program::OnKeyUp(const KeyCode& keycode)
+{
+    unsigned char key = static_cast<unsigned char>(keycode);
+    SharpAudioAPI::SetKeyUp(key);    
 }
 
 void Program::OnMenuItemOpenClicked()

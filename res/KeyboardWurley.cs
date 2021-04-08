@@ -41,6 +41,16 @@ public class KeyboardWurley : AudioBaseType
 		audioSource.Play();
 	}
 
+	public override void KeyboardDown(KeyCode keycode)
+	{
+		
+	}
+
+	public override void KeyboardUp(KeyCode keycode)
+	{
+
+	}
+
 	void SetupEnvelopes()
 	{
 		envelope1 = new Envelope[128];
